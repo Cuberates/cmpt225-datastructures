@@ -19,9 +19,7 @@ class AList {
 	
 	bool empty() const { return size() == 0; }
 	int size() const { return theSize; }
-	void clear() { 
-		delete [] objects; 
-		objects = new Object[theCapacity];
+	void clear() {  
 		theSize = 0; 
 		left = 0; 
 		right = 1; 
@@ -57,20 +55,27 @@ class AList {
 	}
 
 	void display() { 
-		cout << "The current queue: " << "\n";
+		cout << "The current queue: ["; 
 		int l = left; 
 		for(int i = 0; i < theSize; i++) {
-			l = (l + 1) % theCapacity; 
-			cout << objects[l] << " ";
+			l = (l + 1) % theCapacity; // We are incrementing left until it reaches right
+			cout << objects[l]; 
+			if(i < theSize - 1) cout << ", ";
 		}
-		cout << "\n";
+		cout << "]\n"; 
 	}
 
 	void ddisplay() { 
-		cout << "Left: " << left << "\n";
-		cout << "Right: " << right << "\n";
+		cout << "The current deque: [";
+		for(int i = 0; i < theCapacity; i++) { 
+			cout << objects[i];
+			if(i < theCapacity - 1) cout << ", ";
+
+		}
+		cout << "]\n";
+		cout << "Left: " << left << "		 "; 
+		cout << "Right: " << right << "		"; 
 		cout << "Size: " << theSize << "\n";
-		display(); 
 	}
 
 	private:
