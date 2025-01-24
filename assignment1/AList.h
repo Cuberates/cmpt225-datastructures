@@ -55,27 +55,27 @@ class AList {
 	}
 
 	void display() { 
-		cout << "The current queue: ["; 
+		cout << "["; 
 		int l = left; 
 		for(int i = 0; i < theSize; i++) {
 			l = (l + 1) % theCapacity; // We are incrementing left until it reaches right
 			cout << objects[l]; 
 			if(i < theSize - 1) cout << ", ";
 		}
-		cout << "]\n"; 
+		cout << "]"; 
 	}
 
 	void ddisplay() { 
-		cout << "The current deque: [";
+		cout << "[";
 		for(int i = 0; i < theCapacity; i++) { 
 			cout << objects[i];
 			if(i < theCapacity - 1) cout << ", ";
 
 		}
 		cout << "]\n";
-		cout << "Left: " << left << "		 "; 
-		cout << "Right: " << right << "		"; 
-		cout << "Size: " << theSize << "\n";
+		cout << "Left: " << left << "\t"; 
+		cout << "Right: " << right << "\t"; 
+		cout << "Size: " << theSize; 
 	}
 
 	private:
