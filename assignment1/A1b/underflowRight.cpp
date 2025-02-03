@@ -1,8 +1,7 @@
 /******************************************************************
-** 
 **   AList Class, Assignment 1 Part B
-**   File: AListTest.cpp
-**   Description: AList Class test program under constraints 
+**   File: underflowRight.cpp
+**   Description: Performing right-end underflows 
 **   Copyright © 2025, Xuan Viet Duc Nguyen.  All rights reserved.
 **   Student ID: 301626893
 **   Login ID: xvn@sfu.ca
@@ -40,30 +39,21 @@ int testAdd(AList<Object>& L, const Object sample[], const int MAX_CAP = CAP) {
     return 1; 
 }
 
+// Vulnerable function
 template <typename Object>
 int testRemove(AList<Object>& L, const int MAX_CAP = CAP) { 
-    for(int i = 1; i <= MAX_CAP; i++) { 
-        int r = rand() % 2 + 1; 
-        if(r % 2 == 0) { 
-            cout << "removeLeft() => "; 
-            L.removeLeft();
-            L.display();  
-            cout << "\t Size: " << L.size() << "\n";
-            assert(L.size() == CAP-i);
-            continue; 
-        } 
+    for(int i = 1; i <= MAX_CAP + 1; i++) { 
         cout << "removeRight() => "; 
-        L.removeRight(); 
-        L.display(); 
+        L.removeRight();
+        L.display();  
         cout << "\t Size: " << L.size() << "\n";
-        assert(L.size() == CAP-i); 
     }
     return 1; 
 }
 
+
 int main(void) {
-    srand(time(0));
-    cout << "---- Testing on listInt ---- \n";
+	srand(time(0));
     AList<int> listInt; 
     int s1[CAP]; 
     for(int i = 0; i < CAP; i++) { 
@@ -71,32 +61,5 @@ int main(void) {
         s1[i] = r; 
     }
     testAdd(listInt, s1); 
-    testRemove(listInt); 
-    listInt.ddisplay();
-    cout << "\n";
-
-    cout << "---- Testing on listFloat ---- \n";
-    AList<float> listFloat;
-    float s2[CAP]; 
-    for(int i = 0; i < CAP; i++) { 
-        float r1 = rand() % CAP + 1;
-        float r2 = rand() % CAP + 1;  
-        s2[i] = r1 / r2; 
-    }
-    testAdd(listFloat, s2); 
-    testRemove(listFloat); 
-    listFloat.ddisplay();
-    cout << "\n";
-
-    cout << "---- Testing on listChar ---- \n";
-    AList<char> listChar; 
-    char s3[CAP];
-    for(int i = 0; i < CAP; i++) { 
-        int r = rand() % 26; 
-        s3[i] = r + 'A'; 
-    }
-    testAdd(listChar, s3); 
-    testRemove(listChar); 
-    listChar.ddisplay();
-    cout << "\n";
+	testRemove(listInt); // Calling a vulnerable function
 }
