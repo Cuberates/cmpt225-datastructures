@@ -1,5 +1,8 @@
 #include <iostream>
 #include "QuadraticProbing.h"
+#include "BiMap.cpp"
+
+// #include "BiMap.cpp"
 using namespace std;
 
     // Simple main

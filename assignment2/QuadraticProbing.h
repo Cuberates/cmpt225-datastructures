@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include "QuadraticProbing.cpp"
 using namespace std;
 
 int nextPrime( int n );
@@ -41,7 +42,7 @@ class HashTable
 
     bool insert( const HashedObj & x )
     {
-            // Insert x as active
+        // Insert x as active
         int currentPos = findPos( x );
         if( isActive( currentPos ) )
             return false;
@@ -52,7 +53,7 @@ class HashTable
         array[ currentPos ].element = x;
         array[ currentPos ].info = ACTIVE;
 
-            // Rehash; see Section 5.5
+        // Rehash; see Section 5.5
         if( currentSize > array.size( ) / 2 )
             rehash( );
 
@@ -61,7 +62,7 @@ class HashTable
     
     bool insert( HashedObj && x )
     {
-            // Insert x as active
+        // Insert x as active
         int currentPos = findPos( x );
         if( isActive( currentPos ) )
             return false;
@@ -72,7 +73,7 @@ class HashTable
         array[ currentPos ] = std::move( x );
         array[ currentPos ].info = ACTIVE;
 
-            // Rehash; see Section 5.5
+        // Rehash; see Section 5.5
         if( currentSize > array.size( ) / 2 )
             rehash( );
 
@@ -131,12 +132,12 @@ class HashTable
     {
         vector<HashEntry> oldArray = array;
 
-            // Create new double-sized, empty table
+        // Create new double-sized, empty table
         array.resize( nextPrime( 2 * oldArray.size( ) ) );
         for( auto & entry : array )
             entry.info = EMPTY;
 
-            // Copy table over
+        // Copy table over
         currentSize = 0;
         for( auto & entry : oldArray )
             if( entry.info == ACTIVE )
