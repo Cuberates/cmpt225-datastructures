@@ -1,5 +1,5 @@
 all: 
-		g++ -Wall -o TestQuadraticProbing TestQuadraticProbing.cpp
+		g++ -Wall -std=c++20 -o TestQuadraticProbing TestQuadraticProbing.cpp
 run: 
 		./TestQuadraticProbing
 clean: 

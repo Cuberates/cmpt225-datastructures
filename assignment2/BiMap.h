@@ -4,7 +4,7 @@
 template <typename KeyType, typename ValType>  
 class BiMap
 {
-  public:
+    public:
     BiMap ();
 	// constructor
     void makeEmpty( ); 

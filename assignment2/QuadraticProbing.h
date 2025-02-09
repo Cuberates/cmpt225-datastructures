@@ -7,8 +7,7 @@
 #include <string>
 #include "QuadraticProbing.cpp"
 using namespace std;
-
-int nextPrime( int n );
+int nextPrime(int n);
 
 // QuadraticProbing Hash table class
 //
