@@ -2,41 +2,42 @@
 
 #include "QuadraticProbing.h"
 
-// #include "QuadraticProbing.cpp"
-// #include "BiMap.cpp"
-
-// #include "BiMap.cpp"
 using namespace std;
 
     // Simple main
 int main( )
 {
-    HashTable<int> h1;
-    HashTable<int> h2;
+    cout << "HELLO WORLD \n";
+    HashTable<int, int> b1;
+    b1.insert(2, 3);
+    b1.insert(3, 4);
+    b1.ddisplay(); 
+    // HashTable<int> h1;
+    // HashTable<int> h2;
 
-    const int NUMS = 4000;
-    const int GAP  =   37;
-    int i;
+    // const int NUMS = 4000;
+    // const int GAP  =   37;
+    // int i;
 
-    cout << "Checking... (no more output means success)" << endl;
+    // cout << "Checking... (no more output means success)" << endl;
 
-    for( i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-        h1.insert( i );
+    // for( i = GAP; i != 0; i = ( i + GAP ) % NUMS )
+    //     h1.insert( i );
     
-    h2 = h1;
+    // h2 = h1;
     
-    for( i = 1; i < NUMS; i += 2 )
-        h2.remove( i );
+    // for( i = 1; i < NUMS; i += 2 )
+    //     h2.remove( i );
 
-    for( i = 2; i < NUMS; i += 2 )
-        if( !h2.contains( i ) )
-            cout << "Contains fails " << i << endl;
+    // for( i = 2; i < NUMS; i += 2 )
+    //     if( !h2.contains( i ) )
+    //         cout << "Contains fails " << i << endl;
 
-    for( i = 1; i < NUMS; i += 2 )
-    {
-        if( h2.contains( i ) )
-            cout << "OOPS!!! " <<  i << endl;
-    }
+    // for( i = 1; i < NUMS; i += 2 )
+    // {
+    //     if( h2.contains( i ) )
+    //         cout << "OOPS!!! " <<  i << endl;
+    // }
 
-    return 0;
+    // return 0;
 }

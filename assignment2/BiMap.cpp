@@ -1,15 +1,14 @@
+#include "QuadraticProbing.h"
 #include "BiMap.h"
-#include "QuadraticProbing.cpp"
 
 #include <iostream> 
 
 using namespace std;
 
 template<typename KeyType, typename ValType>
-
 BiMap<KeyType, ValType>::BiMap() {
-	HashTable domain; 
-	HashTable coDomain; 
+	// HashTable<KeyType> domain; 
+	// HashTable<ValType> coDomain; 
 }
 template<typename KeyType, typename ValType>
 void BiMap<KeyType, ValType>::makeEmpty() {
@@ -24,7 +23,6 @@ int BiMap<KeyType, ValType>::getSize() const {
 	// assert(sizeDomain == sizeCoDomain); 
 	return sizeDomain; 
 }
-
 // insert pair <x,y>, provided x is not the 
 // key of a current pair and y is not the value of 
 // a current pair.  Return true iff <x,y> was inserted.
@@ -59,15 +57,18 @@ bool BiMap<KeyType, ValType>::removeKey( const KeyType & x ) {
 	// removes the pair with key x if it exists.
 template<typename KeyType, typename ValType>
 bool BiMap<KeyType, ValType>::removeVal( const ValType & x ) {
-		
+	domain.remove(x);
 }
 	// removes the pair with values x if it exists.
 template<typename KeyType, typename ValType>
 const ValType & BiMap<KeyType, ValType>
 ::getVal( const KeyType & x ) const {
-
+	return 1; 
 }
 	// returns the value associated with key x.
 template<typename KeyType, typename ValType>
 const KeyType& BiMap<KeyType, ValType>
-::getKey( const ValType & x ) const {}
+::getKey( const ValType & x ) const {
+	// stuff
+	return 1;
+}

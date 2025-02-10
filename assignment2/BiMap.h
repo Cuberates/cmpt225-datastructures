@@ -3,7 +3,7 @@
 // Implemented with two hash tables.
 template <typename KeyType, typename ValType>  
 class BiMap
-{
+{  
     public:
     BiMap ();
 	// constructor
@@ -27,4 +27,8 @@ class BiMap
         // returns the value associated with key x.
     const KeyType& getKey( const ValType & x ) const;
         // returns the key associated with value x.
+    private:
+    // HashTable<KeyType> domain; 
+    // HashTable<ValType> coDomain; 
+    
 };
