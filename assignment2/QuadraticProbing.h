@@ -51,7 +51,7 @@ class HashTable
             ++currentSize;
 
         array[ currentPos ].element = x;
-        array[ currentPos ].image = y;
+        // array[ currentPos ].image = y;
         array[ currentPos ].info = ACTIVE;
 
         // Rehash; see Section 5.5
@@ -91,17 +91,24 @@ class HashTable
         return true;
     }
 
+    // Adding some stuff
+    int getSize() { return currentSize; }
+    const ValType getVal(const KeyType &x) { 
+        assert(isActive(x));
+        int pos = findPos(x); 
+        return array[pos].image; 
+    }
+
+
     void ddisplay() { 
+        cout << getSize() << "\n";
         for (auto &e : array) { 
             cout << e.element << " " << e.image << " " << e.info << "\n";
         }
-        cout << "HELLO WORLD \n";
+        // cout << "DEBUGGGGUGUGUG"
     }
 
     enum EntryType { ACTIVE, EMPTY, DELETED };
-
-    
-
   private:
     struct HashEntry
     {

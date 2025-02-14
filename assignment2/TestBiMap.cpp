@@ -1,15 +1,16 @@
-#include <iostream>
 // #include "BiMap.h"
 #include "BiMap.cpp"
+#include <iostream> 
+#include <vector> 
 
-using namespace std;
 
-// Simple main
-int main( )
-{
-    BiMap<int, int> b1;
-    b1.insert(2, 3);
-    b1.insert(3, 4);
-    b1.ddisplay(); 
-    return 0;
+int main(void) {
+	BiMap<char, int> b1;
+	int test1 = b1.insert('a', 2);
+	b1.ddisplay();
+	int test2 = b1.removeKey('a');
+	b1.ddisplay(); 
+	cout << test1 << " " << test2 << "\n";
+
+	 
 }
