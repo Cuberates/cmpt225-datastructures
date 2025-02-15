@@ -1,4 +1,12 @@
-// #include "QuadraticProbing.h"
+/******************************************************************
+**   BiMap Class, Assignment 2 Part A
+**   File: QuadraticProbing.cpp
+**   Description: Suplementary functions for array processing
+**   Copyright © 2025, Xuan Viet Duc Nguyen.  All rights reserved.
+**   Student ID: 301626893
+**   Login ID: xvn@sfu.ca
+*******************************************************************
+******************************************************************/
 #include <iostream>
 
 using namespace std;

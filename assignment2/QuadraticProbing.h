@@ -1,3 +1,13 @@
+/******************************************************************
+**   BiMap Class, Assignment 2 Part A
+**   File: QuadraticProbing.h
+**   Description: Class template file without change
+**   Copyright © 2025, Xuan Viet Duc Nguyen.  All rights reserved.
+**   Student ID: 301626893
+**   Login ID: xvn@sfu.ca
+*******************************************************************
+******************************************************************/
+
 #ifndef QUADRATIC_PROBING_H
 #define QUADRATIC_PROBING_H
 
@@ -5,10 +15,10 @@
 #include <algorithm>
 #include <functional>
 #include <string>
-#include "QuadraticProbing.cpp"
 using namespace std;
 
-int nextPrime(int n);
+
+int nextPrime( int n );
 
 // QuadraticProbing Hash table class
 //
@@ -21,49 +31,49 @@ int nextPrime(int n);
 // void makeEmpty( )      --> Remove all items
 // int hashCode( string str ) --> Global method to hash strings
 
-template <typename KeyType, typename ValType>
+template <typename HashedObj>
 class HashTable
 {
   public:
-    explicit HashTable( int size = 11 ) :   array( nextPrime( size ) )
-      { makeEmpty( ); }
+    explicit HashTable( int size = 11 ) : array( nextPrime( size ) )  
+      { makeEmpty( ); } // 
 
-    bool contains( const KeyType & x ) const
+    bool contains( const HashedObj & x ) const
     {
-        return isActive( findPos( x ) );
+        return isActive( findPos( x ) ); // Basically checking if x.info == ACTIVE
     }
 
-    void makeEmpty( )
+    void makeEmpty( ) 
     {
         currentSize = 0;
         for( auto & entry : array )
             entry.info = EMPTY;
     }
-
-    bool insert( const KeyType &x, const ValType &y )
+    
+   
+    bool insert( const HashedObj & x ) 
     {
-        // Insert x as active
+            // Insert x as active
         int currentPos = findPos( x );
         if( isActive( currentPos ) )
             return false;
 
         if( array[ currentPos ].info != DELETED )
-            ++currentSize;
+            ++currentSize; 
 
         array[ currentPos ].element = x;
-        // array[ currentPos ].image = y;
         array[ currentPos ].info = ACTIVE;
 
-        // Rehash; see Section 5.5
+            // Rehash; see Section 5.5
         if( currentSize > array.size( ) / 2 )
             rehash( );
 
         return true;
     }
     
-    bool insert( KeyType && x )
+    bool insert( HashedObj && x )
     {
-        // Insert x as active
+            // Insert x as active
         int currentPos = findPos( x );
         if( isActive( currentPos ) )
             return false;
@@ -74,14 +84,14 @@ class HashTable
         array[ currentPos ] = std::move( x );
         array[ currentPos ].info = ACTIVE;
 
-        // Rehash; see Section 5.5
+            // Rehash; see Section 5.5
         if( currentSize > array.size( ) / 2 )
             rehash( );
 
         return true;
     }
 
-    bool remove( const KeyType & x )
+    bool remove( const HashedObj & x )
     {
         int currentPos = findPos( x );
         if( !isActive( currentPos ) )
@@ -91,36 +101,21 @@ class HashTable
         return true;
     }
 
-    // Adding some stuff
-    int getSize() { return currentSize; }
-    const ValType getVal(const KeyType &x) { 
-        assert(isActive(x));
-        int pos = findPos(x); 
-        return array[pos].image; 
-    }
-
-
-    void ddisplay() { 
-        cout << getSize() << "\n";
-        for (auto &e : array) { 
-            cout << e.element << " " << e.image << " " << e.info << "\n";
-        }
-        // cout << "DEBUGGGGUGUGUG"
-    }
-
     enum EntryType { ACTIVE, EMPTY, DELETED };
+
   private:
     struct HashEntry
     {
-        KeyType element;
-        ValType image;
+        HashedObj element;
         EntryType info;
-
-        HashEntry( const KeyType & e = KeyType{ }, EntryType i = EMPTY )
+	
+	
+	    // This might not be needed
+        HashEntry( const HashedObj & e = HashedObj{ }, EntryType i = EMPTY )
           : element{ e }, info{ i } { }
         
-        HashEntry( KeyType && e, EntryType i = EMPTY )
-          : element{ std::move( e ) }, info{ i } { }    
+        HashEntry( HashedObj && e, EntryType i = EMPTY )
+          : element{ std::move( e ) }, info{ i } { }
     };
     
     vector<HashEntry> array;
@@ -129,7 +124,7 @@ class HashTable
     bool isActive( int currentPos ) const
       { return array[ currentPos ].info == ACTIVE; }
 
-    int findPos( const KeyType & x ) const
+    int findPos( const HashedObj & x ) const
     {
         int offset = 1;
         int currentPos = myhash( x );
@@ -150,21 +145,21 @@ class HashTable
     {
         vector<HashEntry> oldArray = array;
 
-        // Create new double-sized, empty table
+            // Create new double-sized, empty table
         array.resize( nextPrime( 2 * oldArray.size( ) ) );
         for( auto & entry : array )
             entry.info = EMPTY;
 
-        // Copy table over
+            // Copy table over
         currentSize = 0;
         for( auto & entry : oldArray )
             if( entry.info == ACTIVE )
-                insert( std::move( entry.element ) );
+                insert( std::move( entry.element ) ); 
     }
 
-    size_t myhash( const KeyType & x ) const
+    size_t myhash( const HashedObj & x ) const
     {
-        static hash<KeyType> hf;
+        static hash<HashedObj> hf;
         return hf( x ) % array.size( );
     }
 };
