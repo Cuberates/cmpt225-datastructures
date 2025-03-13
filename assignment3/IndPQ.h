@@ -1,35 +1,37 @@
 #include <iostream>
+#include <cassert>
 #include <string> 
 #include <vector> 
 #include "QuadraticProbing.h"
 
-class PQ { 
+class Heap { 
 	public: 
-	PQ(int capacity = 100);
-	PQ(const std::vector<int> & items);
-	void insert(const int &p);
-	int & deleteMin(); 
-	int & getMin(); 
-	vector<int> & getAll() const;
-	void remove(const int &p); 
-	bool isEmpty(); 
-	int size() const; 
-	void clear(); 
+	explicit Heap(int capacity = 100);
+	bool isEmpty() const; 
+	const int & getMin() const; 
+	const int & getSize() const; 
+	void insert(const int &p); 
+	void deleteMin(); 
+	void deleteMin(int &minItem);
 	void display(); 
-	void ddispplay(); 
+	void ddisplay(); 
 
 	private: 
 	int currentSize; 
 	std::vector<int> array;
-	
 	void percolateDown(int hole); 	
+	void preOrder(int root = 1); 
+	void inOrder(int root = 1);
+	void postOrder(int root = 1); 
 };
 
-PQ::PQ(int capacity) { currentSize = 0; array = std::vector<int>(capacity); }
-PQ::PQ(const std::vector<int> &items) { array = items; }
+Heap::Heap(int capacity) { currentSize = 0; array = std::vector<int>(capacity); }
+bool Heap::isEmpty() const { return currentSize == 0; }
+const int & Heap::getMin() const { return array[1]; } 
+const int & Heap::getSize() const { return currentSize; }
 
-void PQ::insert(const int &p) {
-	if(currentSize > array.size()) {
+void Heap::insert(const int &p) {
+	if(currentSize == array.size() - 1) {
 		array.resize(array.size() * 2); 
 	}
 	int hole = ++currentSize; 
@@ -40,47 +42,18 @@ void PQ::insert(const int &p) {
 	}
 	array[hole] = std::move(array[0]);
 }
-int & PQ::deleteMin() { 
-	int minElement = array[1];
-	array[1] = std::move(array[currentSize--]); 
+void Heap::deleteMin() { 
+	assert(isEmpty() == 0 && "Calling deleteMin() on an empty structure!"); 
+	array[1] = std::move(array[currentSize--]);
 	percolateDown(1);
-	return minElement; 
 }
-
-int & PQ::getMin() { 
-	int minElement = array[1]; 
-	return minElement;
+void Heap::deleteMin(int &minItem) {
+	assert(isEmpty() == 0 && "Calling deleteMin() on an empty structure!"); 
+	minItem = std::move(array[1]); 
+	array[1] = std::move(array[currentSize--]);
+	percolateDown(1);
 }
-
-void PQ::remove(const int &p) { 
-	
-}
-
-bool PQ::isEmpty() { 
-	return (currentSize <= 0); 
-}
-
-// Returning the current size of the structure NOT the capacity of the structure
-int PQ::size() const { 
-	return currentSize; 
-}
-
-void PQ::clear() { 
-	currentSize = 0; 
-	array.clear(); 
-}
-
-void PQ::display() {
-	for(int hole = 1; hole <= currentSize; hole++) { 
-		std::cout << "Child nodes of " << array[hole] << "\n";
-		std::cout << "Left: "; 
-		if(hole * 2 <= currentSize) std::cout << array[hole * 2]; std::cout << "\n"; 
-		std::cout << "Right: ";
-		if(hole * 2 + 1 <= currentSize) std::cout << array[hole * 2 + 1]; std::cout << "\n";
-	}
-}
-
-void PQ::percolateDown(int hole) { 
+void Heap::percolateDown(int hole) { 
 	int child; 
 	int tmp = std::move(array[hole]);
 
@@ -94,40 +67,81 @@ void PQ::percolateDown(int hole) {
 			break; 
 	}
 	array[hole] = std::move(tmp);
-}
 
+}
+void Heap::display() {
+	std::cout << "Pre-Order Traversal: "; preOrder(); cout << "\n"; 
+	std::cout << "In-Order Traversal: "; inOrder(); cout << "\n";
+	std::cout << "Post-Order Traversal: "; postOrder(); cout << "\n";
+}
+void Heap::ddisplay() { 
+	std::cout << "Current size: " << currentSize << "\n";
+	std::cout << "Current representation of Heap: \n";
+	for(int i = 1; i <= currentSize; i++) { 
+		std::cout << array[i] << " "; 
+	}
+	cout << "\n";
+	display(); 
+}
+void Heap::preOrder(int root) {
+	if (root > currentSize) return; 
+	int leftChild = 2 * root; 
+	int rightChild = 2 * root + 1; 
+	std::cout << array[root] << " "; 
+	preOrder(leftChild);
+	preOrder(rightChild);
+}
+void Heap::inOrder(int root) {
+	if (root > currentSize) return; 
+	int leftChild = 2 * root; 
+	int rightChild = 2 * root + 1; 
+	preOrder(leftChild);
+	std::cout << array[root] << " "; 
+	preOrder(rightChild);
+}
+void Heap::postOrder(int root) {
+	if (root > currentSize) return; 
+	int leftChild = 2 * root; 
+	int rightChild = 2 * root + 1; 
+	preOrder(leftChild);
+	preOrder(rightChild);
+	std::cout << array[root] << " "; 
+}
 
 class IndPQ { 
 	public: 
-	IndPQ(); 
+	explicit IndPQ(); 
+	bool isEmpty() const; 
+	
+	const std::string & getMin() const; 
+	const int & getSize() const; 
+	
 	void insert(const std::string &taskid, int p); 
-	std::string & deleteMin(); 
-	std::string & getMin();
 	void updatePriority(const std::string &taskid, int p); 
+
+	std::string & deleteMin(); 
+
 	void remove(const std::string &tid); 
-	bool isEmpty(); 
-	int size(); 
 	void clear(); 
+
 	void display();
 	void ddisplay(); 
 
 	private: 
-	PQ priorities; 
-	HashTable<int,string> map; 
+	Heap priorities; 
+	HashTable<int, std::string> hash; 
 };
 
-IndPQ::IndPQ() {}
+IndPQ::IndPQ() {};
 
-void IndPQ::insert(const std::string &taskid, int p) {
-	priorities.insert(p); 
-	map.insert(p, taskid);
-}
-std::string & IndPQ::deleteMin() { 
-	int p = priorities.deleteMin();
-	map.remove(p);
+bool IndPQ::isEmpty() const { return priorities.isEmpty(); }
+
+const std::string & IndPQ::getMin() { 
+	int minP = priorities.getMin(); 
+	std::string & minTask = hash.getVal(minP); 
+	return minTask; 
 }
 
 
-void IndPQ::ddisplay() { 
-	
-}
+
+

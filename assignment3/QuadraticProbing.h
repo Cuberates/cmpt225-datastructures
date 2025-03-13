@@ -93,7 +93,7 @@ class HashTable
 
     // Adding some stuff
     int getSize() { return currentSize; }
-    const ValType getVal(const KeyType &x) { 
+    const ValType & getVal(const KeyType &x) { 
         assert(isActive(x));
         int pos = findPos(x); 
         return array[pos].image; 
