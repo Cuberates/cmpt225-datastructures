@@ -6,7 +6,6 @@
 #include <functional>
 #include <string>
 #include "QuadraticProbing.cpp"
-using namespace std;
 
 int nextPrime(int n);
 
@@ -25,15 +24,15 @@ template <typename KeyType, typename ValType>
 class HashTable
 {
   public:
-    explicit HashTable( int size = 11 ) :   array( nextPrime( size ) )
-      { makeEmpty( ); }
+    explicit HashTable( int size = 11 ) : array( nextPrime( size ) )
+      { makeEmpty(); }
 
     bool contains( const KeyType & x ) const
     {
         return isActive( findPos( x ) );
     }
 
-    void makeEmpty( )
+    void makeEmpty()
     {
         currentSize = 0;
         for( auto & entry : array )
@@ -51,12 +50,12 @@ class HashTable
             ++currentSize;
 
         array[ currentPos ].element = x;
-        // array[ currentPos ].image = y;
+        array[ currentPos ].image = y;
         array[ currentPos ].info = ACTIVE;
 
         // Rehash; see Section 5.5
-        if( currentSize > array.size( ) / 2 )
-            rehash( );
+        if( currentSize > array.size() / 2 )
+            rehash();
 
         return true;
     }
@@ -75,8 +74,8 @@ class HashTable
         array[ currentPos ].info = ACTIVE;
 
         // Rehash; see Section 5.5
-        if( currentSize > array.size( ) / 2 )
-            rehash( );
+        if( currentSize > array.size() / 2 )
+            rehash();
 
         return true;
     }
@@ -91,21 +90,19 @@ class HashTable
         return true;
     }
 
-    // Adding some stuff
     int getSize() { return currentSize; }
-    const ValType & getVal(const KeyType &x) { 
+    ValType & getVal(const KeyType &x) { 
         assert(isActive(x));
         int pos = findPos(x); 
-        return array[pos].image; 
+        ValType &im = array[pos].image; 
+        return im;
     }
 
-
     void ddisplay() { 
-        cout << getSize() << "\n";
+        std::cout << getSize() << "\n";
         for (auto &e : array) { 
-            cout << e.element << " " << e.image << " " << e.info << "\n";
+            std::cout << e.element << " " << e.image << " " << e.info << "\n";
         }
-        // cout << "DEBUGGGGUGUGUG"
     }
 
     enum EntryType { ACTIVE, EMPTY, DELETED };
@@ -123,7 +120,7 @@ class HashTable
           : element{ std::move( e ) }, info{ i } { }    
     };
     
-    vector<HashEntry> array;
+    std::vector<HashEntry> array;
     int currentSize;
 
     bool isActive( int currentPos ) const
@@ -139,19 +136,19 @@ class HashTable
         {
             currentPos += offset;  // Compute ith probe
             offset += 2;
-            if( currentPos >= array.size( ) )
-                currentPos -= array.size( );
+            if( currentPos >= array.size() )
+                currentPos -= array.size();
         }
 
         return currentPos;
     }
 
-    void rehash( )
+    void rehash()
     {
-        vector<HashEntry> oldArray = array;
+        std::vector<HashEntry> oldArray = array;
 
         // Create new double-sized, empty table
-        array.resize( nextPrime( 2 * oldArray.size( ) ) );
+        array.resize( nextPrime( 2 * oldArray.size() ) );
         for( auto & entry : array )
             entry.info = EMPTY;
 
@@ -164,8 +161,8 @@ class HashTable
 
     size_t myhash( const KeyType & x ) const
     {
-        static hash<KeyType> hf;
-        return hf( x ) % array.size( );
+        static std::hash<KeyType> hf;
+        return hf( x ) % array.size();
     }
 };
 

@@ -1,0 +1,33 @@
+./TestIndPQ
+
+Initial Priority Queue:
+TaskID: Task D	 Prioritiy: 1
+TaskID: Task B	 Prioritiy: 2
+TaskID: Task A	 Prioritiy: 5
+TaskID: Task C	 Prioritiy: 8
+
+Task with the highest priority: Task D
+
+Deleting minimum priority task: Task D
+
+Priority Queue after deleting min:
+TaskID: Task B	 Prioritiy: 2
+TaskID: Task A	 Prioritiy: 5
+TaskID: Task C	 Prioritiy: 8
+
+Updating priority of 'Task C' to 0 (highest priority)
+
+Priority Queue after update:
+TaskID: Task C	 Prioritiy: 0
+TaskID: Task A	 Prioritiy: 5
+TaskID: Task B	 Prioritiy: 2
+
+Removing 'Task B'
+
+Priority Queue after removing 'Task B':
+TaskID: Task C	 Prioritiy: 0
+TaskID: Task A	 Prioritiy: 5
+
+Clearing the queue...
+
+Final Priority Queue:
