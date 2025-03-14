@@ -1,10 +1,14 @@
 #include <iostream>
 #include <cassert>
+// #include <pair>
 #include <string> 
 #include <vector> 
+#include <limits.h> 
 #include "QuadraticProbing.h"
 
 #define INF INT_MAX
+typedef std::pair<int, std::string> Node; 
+
 
 class Heap { 
 	public: 
@@ -25,17 +29,17 @@ class Heap {
 
 	private: 
 	int currentSize; 
-	std::vector<int> array;
-	std::vector<int> traversal; 
+	std::vector<Node> array;
+	std::vector<int> traversal;
 	void decreaseKey(const int &p, const int &delta);
 	void increaseKey(const int &p, const int &delta);
 	void percolateDown(int hole); 	
 	void percolateUp(int hole); 
 
-	// For debugging purposes
-	void preOrder(const int & root, bool called = 0); 
-	void inOrder(const int & root, bool called = 0);
-	void postOrder(const int & root, bool called = 0);
+	// For traversals
+	void preOrder(const int & root, bool called); 
+	void inOrder(const int & root, bool called);
+	void postOrder(const int & root, bool called);
 };
 
 Heap::Heap(int capacity) { currentSize = 0; array = std::vector<int>(capacity); }
@@ -43,12 +47,12 @@ bool Heap::isEmpty() const { return currentSize == 0; }
 const int & Heap::getMin() const { return array[1]; } 
 const int & Heap::getSize() const { return currentSize; }
 
-void Heap::insert(const int &p) {
+void Heap::insert(const int &p,const std::string &taskid) {
 	if(currentSize == array.size() - 1) {
 		array.resize(array.size() * 2); 
 	}
 	int hole = ++currentSize; 
-	array[0] = std::move(p);
+	array[0] = std::move(std::make_pair(p, taskid));
 	percolateUp(hole);
 }
 
@@ -74,10 +78,10 @@ void Heap::deleteMin(int &minItem) {
 void Heap::increaseKey(const int &p, const int &delta) { // nlog(n) which is pretty bad
 	int pos = -1; 
 	for(pos; pos <= currentSize; pos++) {
-		if(array[pos] == p) break;
+		if(pos >= 1 && array[pos] == p) break;
 	}
 	assert(pos != -1 && "Priority does not exist in the heap!");
-	array[pos] += delta; 
+	array[pos] = array[pos] + delta; 
 	percolateDown(pos);
 }		
 
@@ -87,7 +91,7 @@ void Heap::decreaseKey(const int &p, const int &delta) {
 		if(array[pos] == p) break;
 	}
 	assert(pos != -1 && "Priority does not exist in the heap!");
-	array[pos] -= delta; 
+	array[pos] = array[pos] - delta; 
 	percolateUp(pos);
 }
 
@@ -100,7 +104,7 @@ void Heap::updatePriority(const int &p, const int &delta) {
 void Heap::percolateDown(int hole) { 
 	int child; 
 	int tmp = std::move(array[hole]);
-	for(hole; hole * 2 <= currentSize; hole = child) { 
+	for(; hole * 2 <= currentSize; hole = child) { 
 		child = hole * 2; 
 		if (child != currentSize && array[child + 1] < array[child])
 			++child; 
@@ -143,7 +147,7 @@ void Heap::ddisplay() {
 	display(); 
 }
 
-void Heap::preOrder(const int &root = 1, bool called) {
+void Heap::preOrder(const int &root = 1, bool called = false) {
 	if(called == 0) traversal.clear(); 
 	if(root > currentSize) return; 
 	int leftChild = root * 2; 
@@ -153,7 +157,7 @@ void Heap::preOrder(const int &root = 1, bool called) {
 	preOrder(rightChild, 1);
 }
 
-void Heap::inOrder(const int &root = 1, bool called) { 
+void Heap::inOrder(const int &root = 1, bool called = false) { 
 	if(called == 0) traversal.clear(); 
 	if(root > currentSize) return; 
 	int leftChild = root * 2; 
@@ -163,7 +167,7 @@ void Heap::inOrder(const int &root = 1, bool called) {
 	inOrder(rightChild);
 }
 
-void Heap::postOrder(const int &root = 1, bool called) {
+void Heap::postOrder(const int &root = 1, bool called = false) {
 	if(called == 0) traversal.clear(); 
 	if(root > currentSize) return; 
 	int leftChild = root * 2; 
@@ -179,82 +183,83 @@ void Heap::clear() {
 	currentSize = 0; 
 }
 
-class IndPQ { 
-	public: 
-	explicit IndPQ(); 
-	bool isEmpty() const; 
-	std::string & getMin(); 
-	const int & getSize() const; 
-	void insert(const std::string &taskid, int p); 
-	void updatePriority(const std::string &taskid, int p); 
-	std::string & deleteMin(); 
-	void remove(const std::string &tid); 
-	void clear(); 
-	void display();
-	void ddisplay(); 
-	private: 
-	Heap priorities; 
-	HashTable<int, std::string> hash; 
-};
+// class IndPQ { 
+// 	public: 
+// 	explicit IndPQ(); 
+// 	bool isEmpty() const; 
+// 	std::string & getMin(); 
+// 	const int & getSize() const; 
+// 	void insert(const std::string &taskid, int p); 
+// 	void updatePriority(const std::string &taskid, int p); 
+// 	std::string & deleteMin(); 
+// 	void remove(const std::string &tid); 
+// 	void clear(); 
+// 	void display();
+// 	void ddisplay(); 
+// 	private: 
+// 	Heap priorities; 
+// 	HashTable<int, std::string> hash; // This does not allow duplication
+// 	// HashTable<int, std::string> hash;
+// };
 
-IndPQ::IndPQ() {};
+// IndPQ::IndPQ() {};
 
-bool IndPQ::isEmpty() const { return priorities.isEmpty(); }
+// bool IndPQ::isEmpty() const { return priorities.isEmpty(); }
 
-std::string & IndPQ::getMin() { 
-	int minP = priorities.getMin(); 
-	std::string & minTask = hash.getVal(minP);
-	return minTask; 
-}
+// std::string & IndPQ::getMin() { 
+// 	int minP = priorities.getMin(); 
+// 	std::string & minTask = hash.getVal(minP);
+// 	return minTask; 
+// }
 
-const int & IndPQ::getSize() const { 
-	return priorities.getSize(); 
-}
+// const int & IndPQ::getSize() const { 
+// 	return priorities.getSize(); 
+// }
 
-void IndPQ::insert(const std::string &taskid, int p) {
-	assert(hash.contains(p) == 0 && "Insertion of duplication!");
-	priorities.insert(p); 
-	hash.insert(p, taskid);
-}
+// void IndPQ::insert(const std::string &taskid, int p) {
+// 	assert(hash.contains(p) == 0 && "Insertion of duplication!");
+// 	priorities.insert(p); 
+// 	hash.insert(p, taskid);
+// }
 
-void IndPQ::updatePriority(const std::string &taskid, int p) {
-	remove(taskid);
-	insert(taskid, p);
-}
+// void IndPQ::updatePriority(const std::string &taskid, int p) {
+// 	remove(taskid);
+// 	insert(taskid, p);
+// }
 
-std::string & IndPQ::deleteMin() {
-	int minP = priorities.getMin(); 
-	std::string & minTask = hash.getVal(minP);
-	priorities.deleteMin(); 
-	hash.remove(minP);
-	return minTask; 
-}
+// std::string & IndPQ::deleteMin() {
+// 	int minP = priorities.getMin(); 
+// 	std::string & minTask = hash.getVal(minP);
+// 	priorities.deleteMin(); 
+// 	hash.remove(minP);
+// 	return minTask; 
+// }
 
-void IndPQ::remove(const std::string &tid) { 
-	const std::vector<int> & allPriorities = priorities.traverse(); 
-	bool found = 0; 
-	for (const auto & cp : allPriorities) { 
-		const std::string & currentTask = hash.getVal(cp);
-		if (currentTask == tid) {
-			found = 1; 
-			priorities.remove(cp); 
-			hash.remove(cp);
-		}
-	}	
-	assert(found == 1 && "Non-existent priority!"); 
-}
+// void IndPQ::remove(const std::string &tid) { 
+// 	const std::vector<int> & allPriorities = priorities.traverse(); 
+// 	bool found = 0; 
+// 	for (const auto & cp : allPriorities) { 
+// 		const std::string & currentTask = hash.getVal(cp);
+// 		if (currentTask == tid) {
+// 			found = 1; 
+// 			priorities.remove(cp); 
+// 			hash.remove(cp);
+// 		}
+// 	}	
+// 	assert(found == 1 && "Non-existent priority!"); 
+// }
 
-void IndPQ::clear() { 
-	priorities.clear(); 
-	hash.makeEmpty(); 
-}
+// void IndPQ::clear() { 
+// 	priorities.clear(); 
+// 	hash.makeEmpty(); 
+// }
 
-void IndPQ::display() { 
-	const std::vector<int> & allPriorities = priorities.traverse(); 
-	for (const auto & p : allPriorities) {
-		std::cout << "TaskID: " << hash.getVal(p) << "\t Prioritiy: " << p << "\n"; 
-	}
-}
+// void IndPQ::display() { 
+// 	const std::vector<int> & allPriorities = priorities.traverse(); 
+// 	for (const auto & p : allPriorities) {
+// 		std::cout << "TaskID: " << hash.getVal(p) << "\t Prioritiy: " << p << "\n"; 
+// 	}
+// }
 
 
 

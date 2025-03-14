@@ -1,5 +1,5 @@
 #include <iostream>
-#include "QuadraticProbing.h"
+// #include "QuadraticProbing.h"
 #include "IndPQ.h"
 
 void testHeap() {
@@ -25,14 +25,14 @@ void testHeap() {
     heap.deleteMin();
     heap.display();
 
-    // Increase priority of 20 by 4 (should percolate down) - ensures it doesn't match an existing priority
-    std::cout << "Increasing priority of 20 by 4...\n";
-    heap.updatePriority(20, 4);
+    // Increase priority of 20 by 5 (should percolate down)
+    std::cout << "Increasing priority of 20 by 5...\n";
+    heap.updatePriority(20, 5);
     heap.display();
 
-    // Decrease priority of 30 by 12 (should percolate up) - ensures it doesn't match an existing priority
-    std::cout << "Decreasing priority of 30 by 12...\n";
-    heap.updatePriority(30, -12);
+    // Decrease priority of 30 by 15 (should percolate up)
+    std::cout << "Decreasing priority of 30 by 15...\n";
+    heap.updatePriority(30, -15);
     heap.display();
 
     // Remove an element (removes 5)
@@ -48,9 +48,7 @@ void testHeap() {
 
 void testIndPQ() {
     std::cout << "\n=== Testing Indexed Priority Queue (IndPQ) ===\n";
-    
     IndPQ pq;
-    
     // Insert elements with unique priorities
     std::cout << "Inserting: (Task1, 5), (Task2, 3), (Task3, 8), (Task4, 1), (Task5, 7)\n";
     pq.insert("Task1", 5);
@@ -60,7 +58,7 @@ void testIndPQ() {
     pq.insert("Task5", 7);
     
     pq.display();
-
+    
     // Get min element
     std::cout << "Min Task: " << pq.getMin() << "\n";
 
@@ -69,13 +67,14 @@ void testIndPQ() {
     pq.deleteMin();
     pq.display();
 
-    // Increase priority of Task3 (was 8) by 3 → moves to 11 (ensuring it's unique)
-    std::cout << "Increasing priority of Task3 by 3...\n";
-    pq.updatePriority("Task3", 3);
+    // Increase priority of Task3 by 2 (should move down)
+    std::cout << "Increasing priority of Task3 by 2...\n";
+    pq.updatePriority("Task3", 2);
     pq.display();
 
-    // Decrease priority of Task1 (was 5) by 2 → moves to 3, but we prevent this because Task2 already has priority 3
-    std::cout << "Decreasing priority of Task1 by 2... (checking for uniqueness)\n";
+    // Decrease priority of Task1 by 3 (should move up)
+    std::cout << "Decreasing priority of Task1 by 3...\n";
+    pq.updatePriority("Task1", -3);
     pq.display();
 
     // Remove Task2

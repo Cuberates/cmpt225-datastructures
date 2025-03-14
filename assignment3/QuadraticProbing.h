@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <cassert>
 #include <string>
 #include "QuadraticProbing.cpp"
 

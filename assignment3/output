@@ -1,0 +1,30 @@
+=== Testing Heap ===
+In-Order Traversal: 3 5 30 20 10 
+Min Element: 3
+After deleting min:
+In-Order Traversal: 5 20 30 10 
+After decreasing priority of 20 to 1:
+In-Order Traversal: 5 21 30 10 
+After removing 5:
+In-Order Traversal: 10 21 30 
+Heap cleared.
+In-Order Traversal: 
+
+=== Testing Indexed Priority Queue (IndPQ) ===
+TaskID: Task4	 Prioritiy: 1
+TaskID: Task2	 Prioritiy: 3
+TaskID: Task1	 Prioritiy: 5
+TaskID: Task3	 Prioritiy: 8
+Min Task: Task4
+After deleting min task:
+TaskID: Task2	 Prioritiy: 3
+TaskID: Task1	 Prioritiy: 5
+TaskID: Task3	 Prioritiy: 8
+After updating Task3's priority to 2:
+TaskID: Task3	 Prioritiy: 2
+TaskID: Task1	 Prioritiy: 5
+TaskID: Task2	 Prioritiy: 3
+After removing Task1:
+TaskID: Task3	 Prioritiy: 2
+TaskID: Task2	 Prioritiy: 3
+Queue cleared.
