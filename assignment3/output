@@ -1,0 +1,45 @@
+./TestIndPQ
+After insertions: 
+Task ID=ID-0 | Priority=0
+Task ID=ID-9 | Priority=3
+Task ID=ID-1 | Priority=1
+Task ID=ID-36 | Priority=6
+Task ID=ID-25 | Priority=5
+Task ID=ID-4 | Priority=2
+Task ID=ID-16 | Priority=4
+Task ID=ID-81 | Priority=9
+Task ID=ID-49 | Priority=7
+Task ID=ID-64 | Priority=8
+Minimum task ID: ID-0
+Removing min task: ID-1
+Task ID=ID-1 | Priority=1
+Task ID=ID-9 | Priority=3
+Task ID=ID-4 | Priority=2
+Task ID=ID-36 | Priority=6
+Task ID=ID-25 | Priority=5
+Task ID=ID-64 | Priority=8
+Task ID=ID-16 | Priority=4
+Task ID=ID-81 | Priority=9
+Task ID=ID-49 | Priority=7
+Updating priority of 'ID-9' to 100: 
+Task ID=ID-1 | Priority=1
+Task ID=ID-9 | Priority=3
+Task ID=ID-4 | Priority=2
+Task ID=ID-36 | Priority=6
+Task ID=ID-25 | Priority=5
+Task ID=ID-64 | Priority=8
+Task ID=ID-16 | Priority=4
+Task ID=ID-81 | Priority=9
+Task ID=ID-9 | Priority=100
+Removing task 'ID-9' from the queue: 
+Task ID=ID-4 | Priority=2
+Task ID=ID-9 | Priority=3
+Task ID=ID-16 | Priority=4
+Task ID=ID-36 | Priority=6
+Task ID=ID-25 | Priority=5
+Task ID=ID-64 | Priority=8
+Task ID=ID-9 | Priority=100
+Task ID=ID-81 | Priority=9
+Is heap empty? No
+Heap size: 8
+After clearing the heap, is empty? Yes

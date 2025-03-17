@@ -4,12 +4,143 @@
 #include <functional>
 #include <string>
 #include <cassert>
+#include "QuadraticProbing.cpp"
 
-/**
- * Design structure:
- * - A heap which stores <TASK, PRIORITY> which is good enough but inefficient
- * due to updatePriority(TASK, NEW_PRIORITY)
- *  */ 
+
+
+template <typename KeyType, typename ValType>
+class HashTable {
+   public:
+      explicit HashTable(int size = 11) : array(nextPrime(size)) { makeEmpty(); }
+
+      bool contains(const KeyType &x) const {
+         return isActive(findPos(x));
+      }
+
+      void makeEmpty() {
+         currentSize = 0;
+         for (auto &entry : array)
+            entry.info = EMPTY;
+      }
+
+      bool insert(const KeyType &x, const ValType &y) {
+         int currentPos = findPos(x);
+         if (isActive(currentPos)) return false;
+         if (array[currentPos].info != DELETED) ++currentSize;
+         
+         array[currentPos].first = x;
+         array[currentPos].second = y;
+         array[currentPos].info = ACTIVE;
+         
+         if (currentSize > array.size() / 2) rehash();
+         return true;
+      }
+      
+      bool insert(KeyType &&x, ValType &&y) {
+         int currentPos = findPos(x);
+         if (isActive(currentPos)) return false;
+         if (array[currentPos].info != DELETED) ++currentSize;
+         
+         array[currentPos].first = std::move(x);
+			array[currentPos].second = std::move(y); 
+         array[currentPos].info = ACTIVE;
+         
+         if (currentSize > array.size() / 2) rehash();
+         return true;
+      }
+
+      bool remove(const KeyType &x) {
+         int currentPos = findPos(x);
+         if (!isActive(currentPos)) return false;
+         
+         array[currentPos].info = DELETED;
+         return true;
+      }
+      
+      int getSize() const { return currentSize; }
+
+      ValType getVal(const KeyType &x) const {
+         assert(contains(x));
+         auto pos = findPos(x);
+         return array[pos].second;
+      }
+
+      void display() {
+         std::cout << "--------------------------\n";
+         for (auto &pair : array) {
+            if (pair.info == ACTIVE)
+               std::cout << pair.first << " " << pair.second << "\n";
+         }
+         std::cout << "--------------------------\n";
+      }
+      
+      void ddisplay() {
+         std::cout << "--------------------------\n";
+         for (auto &pair : array) {
+            if (pair.info == DELETED)
+               std::cout << pair.first << " " << pair.second << " DELETED\n";
+            else if (pair.info == ACTIVE)
+               std::cout << pair.first << " " << pair.second << " ACTIVE\n";
+            else
+               std::cout << ". . EMPTY\n";
+         }
+         std::cout << "--------------------------\n";
+      }
+
+      enum EntryType { ACTIVE, EMPTY, DELETED };
+
+   private:
+      struct HashEntry {
+         KeyType first;
+         ValType second;
+         EntryType info;
+
+         HashEntry(const KeyType &e = KeyType{}, EntryType i = EMPTY)
+            : first{e}, info{i} {}
+
+         HashEntry(KeyType &&e, EntryType i = EMPTY)
+            : first{std::move(e)}, info{i} {}
+      };
+
+      std::vector<HashEntry> array;
+      int currentSize;
+
+      bool isActive(int currentPos) const {
+         return array[currentPos].info == ACTIVE;
+      }
+
+      int findPos(const KeyType &x) const {
+         int offset = 1;
+         int currentPos = myhash(x);
+         
+         while (array[currentPos].info != EMPTY && array[currentPos].first != x) {
+            currentPos += offset;
+            offset += 2;
+            if (currentPos >= array.size())
+               currentPos -= array.size();
+         }
+         return currentPos;
+      }
+
+      void rehash() {
+         std::vector<HashEntry> oldArray = array;
+         
+         array.resize(nextPrime(2 * oldArray.size()));
+         for (auto &entry : array)
+            entry.info = EMPTY;
+         
+         currentSize = 0;
+         for (auto &entry : oldArray)
+            if (entry.info == ACTIVE)
+               insert(std::move(entry.first), std::move(entry.second));
+      }
+
+      size_t myhash(const KeyType &x) const {
+         static std::hash<KeyType> hf;
+         return hf(x) % array.size();
+      }
+};
+
 
 class Node {
 	private:
@@ -23,8 +154,8 @@ class Node {
 		this->priority = priority; 
 	}
 
-	const std::string & getID() { return this->taskID; }
-	const int & getpriority() { return this->priority; }
+	const std::string & getID() const { return this->taskID; }
+	const int getpriority() const { return this->priority; }
 
 	void setID(const std::string & taskID) { this->taskID = taskID; }
 	void setPriority(const int & priority) { this->priority = priority; }
@@ -37,6 +168,7 @@ class Node {
 		return cout; 
 	}
 };
+
 
 template<typename Object> 
 class Heap {
@@ -51,12 +183,28 @@ class Heap {
 	void display(); 
 	void ddisplay(); 
 
-	private: 
-	int currentSize;
-	std::vector<Object> array;
 	void percolateUp(int hole);
 	void percolateDown(int hole); 
+
+	// private: 
+	int currentSize;
+	std::vector<Object> array;
 	void preOrder(int root);
+	    // Overload the operator[] for direct index access
+	Object & operator[](int index) {
+		if (index <= 0 || index > currentSize) {
+			throw std::out_of_range("Index out of range!");
+		}
+		return array[index];
+	}
+
+	const Object & operator[](int index) const {
+		if (index <= 0 || index > currentSize) {
+			throw std::out_of_range("Index out of range!");
+		}
+		return array[index];
+	}
+
 };
 
 template<typename Object>
@@ -132,4 +280,71 @@ void Heap<Object>::preOrder(int root) {
 	preOrder(leftChild);
 	preOrder(rightChild);
 }
+// Insert with the new priority.
+class IndPQ {
+   private:
+      Heap<Node> heap;
+      HashTable<std::string, int> indexMap;
+
+   public:
+      IndPQ() : heap(100), indexMap(100) {}
+
+      void insert(const std::string &taskID, int priority) {
+         Node newNode(taskID, priority);
+         heap.insert(newNode);
+         indexMap.insert(taskID, heap.getSize());
+      }
+
+      const std::string & deleteMin() {
+         assert(!heap.isEmpty() && "Calling deleteMin() on empty structure!");
+         const std::string & minTask = heap.getMin().getID();
+         heap.deleteMin();
+         indexMap.remove(minTask);
+         return minTask;
+      }
+
+      std::string getMin() {
+         assert(!heap.isEmpty() && "Calling getMin() on empty structure!");
+         return heap.getMin().getID();
+      }
+
+      void updatePriority(const std::string &taskID, int newPriority) {
+			// Ensure the task exists in the heap (check for presence in the index map)
+			assert(indexMap.contains(taskID) && "TaskID not found!");
+
+			// Step 1: Find the task index in the heap
+			int index = indexMap.getVal(taskID);  // Get the index from the indexMap
+			
+			// Step 2: Access the task and update its priority
+			// Assuming heap is a std::vector<Node> where Node has getPriority and setPriority methods
+			Node &taskNode = heap[index];  // Directly access the task node in the heap
+
+
+			// Update the priority of the task
+			taskNode.setPriority(newPriority);
+
+			// Step 3: Percolate up or down to restore heap property
+			if (newPriority < taskNode.getpriority()) {
+				// If the new priority is smaller, percolate up
+				heap.percolateUp(index);
+			} else {
+				// If the new priority is larger, percolate down
+				heap.percolateDown(index);
+			}
+}
+
+
+      void remove(const std::string &taskID) {
+         assert(indexMap.contains(taskID) && "TaskID not found!");
+			int index = indexMap.getVal(taskID);
+			heap.deleteMin(); 
+			indexMap.remove(taskID);
+      }
+
+      bool isEmpty() { return heap.isEmpty(); }
+      int size() { return heap.getSize(); }
+      void clear() { while (!heap.isEmpty()) deleteMin(); }
+      void display() { heap.display(); }
+      void ddisplay() { heap.ddisplay(); }
+};
 
