@@ -53,7 +53,7 @@ class Heap {
 
 	private: 
 	int currentSize;
-	std::vector<Object> array; 
+	std::vector<Object> array;
 	void percolateUp(int hole);
 	void percolateDown(int hole); 
 	void preOrder(int root);
@@ -68,7 +68,7 @@ const bool Heap<Object>::isEmpty() { return currentSize == 0; }
 template<typename Object>
 const Object & Heap<Object>::getMin() { 
 	assert(isEmpty() == false && "Calling getMin() on empty structure!");
-	return array[0]; 
+	return array[1]; 
 }
 
 template<typename Object> 
@@ -78,9 +78,9 @@ const int & Heap<Object>::getSize() {
 
 template<typename Object>
 void Heap<Object>::insert(const Object & obj) { 
-	if (currentSize == array.size() - 1) { 
+	if (currentSize == array.size() - 1) 
 		array.resize(array.size() * 2);
-	}
+
 	int hole = ++currentSize; 
 	Object copy = obj; 
 	array[hole] = std::move(copy);
@@ -90,9 +90,23 @@ void Heap<Object>::insert(const Object & obj) {
 template<typename Object> 
 void Heap<Object>::percolateUp(int hole) { 
 	for(; array[hole] < array[hole / 2]; hole /= 2)
-		// array[hole] = std::move(array[hole / 2]);
 		std::swap(array[hole], array[hole/2]);
-	// array[hole] = std::move(array[0]);
+}
+
+template<typename Object>
+void Heap<Object>::percolateDown(int hole) {
+	int child; 
+	Object tmp = std::move(array[hole]);
+	for(; hole * 2 <= currentSize; hole = child) { 
+		child = hole * 2; 
+		if (child != currentSize && array[child + 1] < array[child])
+			++child;
+		if (array[child] < tmp) 
+			array[hole] = std::move(array[child]);
+		else
+			break; 
+	}
+	array[hole] = std::move(tmp);
 }
 
 template<typename Object> 
@@ -118,3 +132,4 @@ void Heap<Object>::preOrder(int root) {
 	preOrder(leftChild);
 	preOrder(rightChild);
 }
+
