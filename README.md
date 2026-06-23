@@ -1,3 +1,2 @@
 # CMPT225: Introduction to Data Structures and Programming
-The following is the source files for various projects and assignments in my CMPT225 class at SFU. 
-
+Implements static Circular Arrays, bijective HashMaps with Quadratic Probing algorithm for hashing, and Indexed Priority Queues.   
